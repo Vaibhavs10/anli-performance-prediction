@@ -19,8 +19,7 @@ def return_len_and_vocabulary(list_of_rows):
     vocab = []
     for sent in list_of_rows:
         new_sent = sent[1] + " " + sent[2] + " " + sent[3] + " " + sent[4]
-        x = new_sent.split(" ")
-        sentence = [w.lower() for w in x if w.isalpha() ]
+        sentence = preprocess_sentence(new_sent)
         sentences.append(sentence)
         for word in sentence:
             if word not in vocab:
@@ -46,6 +45,13 @@ def return_count_vector(sent, index_word, len_vector):
             except:
                 pass
     return vec
+
+def sparse_incidence_vector(sentence, word_to_index):
+    """
+    Given a string and a dictionary that maps words to their index in the vocabulary, 
+    returns a set containing all the indexes of the words that the sentence contains.
+    """
+    return { word_to_index[w] for w in preprocess_sentence(sentence) if w in word_to_index }
 
 def preprocess_sentence(sent):
     return [w.lower() for w in sent.split(" ") if w.isalpha()]
