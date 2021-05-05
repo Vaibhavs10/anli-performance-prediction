@@ -1,5 +1,6 @@
 import math
 from collections import Counter
+from operator import itemgetter
 
 class BinaryDecisionTreeNode():
     """One node in a decision tree that can split into 2 branches"""
@@ -16,11 +17,12 @@ class BinaryDecisionTreeNode():
     def split(self):
         """Split this into two on the feature that would lead to the biggest information gain"""
         info_gain_for_all_features = information_gain(x, y, feature_mask=self.already_used_features)
-        if max(info_gain_for_all_features) == 0:            # if no possible split leads to an information gain, don't split
+        # if no possible split leads to an information gain, don't split
+        if len(info_gain_for_all_features) == 0 or max(info_gain_for_all_features.values()) == 0:            
             return
 
         self.is_leaf = False
-        self.split_feature_index = argmax(info_gain_for_all_features) # split on the feature that leads to the most information gain
+        self.split_feature_index = dictionary_argmax(info_gain_for_all_features) # split on the feature that leads to the most information gain
         good_x, bad_x, good_y, bad_y = split_on_binary_feature(x, y, self.split_feature_index)
 
         new_used_features = self.already_used_features + [self.split_feature_index]
@@ -46,11 +48,14 @@ class BinaryDecisionTreeNode():
         if self.is_leaf:
             return self.most_common_class
         else:
-            feature_value = x[self.split_feature_index]
+            feature_value = 1 if self.split_feature_index in x else 0
             return self.children[feature_value].predict_class(x) 
 
 def argmax(array):
       return array.index(max(array))
+
+def dictionary_argmax(dictionary):
+    return max(dictionary.items(), key=itemgetter(1))[0]
 
 def entropy(y):
     """Calculate entropy from list of labels in the dataset"""
@@ -65,42 +70,50 @@ def split_on_binary_feature(x, y, feature_index):
     """Split instances x and labels y into two sets based on whether the feature at feature_index is 1 or 0"""
     good_x, bad_x, good_y, bad_y = [], [], [], []
     for instance_index, instance in enumerate(x):
-        good_x.append(instance) if instance[feature_index] == 1 else bad_x.append(instance)
-        good_y.append(y[instance_index]) if instance[feature_index] == 1 else bad_y.append(y[instance_index])
+        good_x.append(instance) if feature_index in instance else bad_x.append(instance)
+        good_y.append(y[instance_index]) if feature_index in instance else bad_y.append(y[instance_index])
     
     return good_x, bad_x, good_y, bad_y
           
 def information_gain(x, y, feature_mask = []):
-    """Calculates the information gain for each feature in x and returns them as a list. Ignores the features in feature_mask (since they can't be used for splitting again)"""
-    result = []
+    """
+    Calculates the information gain for each feature in x and returns them as a dictionary mapping from index feature to the information gain.
+    Ignores the features in feature_mask (since they can't be used for splitting again)
+    """
+    result = {}
     start_entropy = entropy(y)
-    for feature_index in range(len(x)-1):
-        if feature_index in feature_mask:
-            result.append(0)
+    all_features_in_x = set()
+    for instance in x:
+        all_features_in_x |= instance
+
+    for feature in all_features_in_x:
+        if feature in feature_mask:
             continue
-        good_x, bad_x, good_y, bad_y = split_on_binary_feature(x, y, feature_index)
+        good_x, bad_x, good_y, bad_y = split_on_binary_feature(x, y, feature)
 
         s  = (len(good_x) / len(x)) * entropy(good_y)
         s += (len(bad_x)  / len(x)) * entropy(bad_y)
 
-        result.append(start_entropy - s)
+        result[feature] = start_entropy - s
     return result
 
 
 if __name__ == "__main__":
     # Tests
-    x = [[1, 1, 1], [0, 1, 1], [1, 1, 0], [1, 0, 1]]
+    x = [{0, 1, 2}, {1, 2}, {0, 1}, {0, 2}]
     y = [1, 1, 1, 1]
     binary_test_tree = BinaryDecisionTreeNode(x, y)
     binary_test_tree.split_recursively()
-    assert binary_test_tree.predict_class([0, 1, 1]) == 1
-    assert binary_test_tree.predict_class([1, 0, 0]) == 1
+    assert binary_test_tree.predict_class({1, 2}) == 1
+    assert binary_test_tree.predict_class({0}) == 1
 
-    x = [[1, 1, 1], [0, 1, 1], [1, 1, 0], [1, 0, 1]]
+    x = [{0, 1, 2}, {1, 2}, {0, 1}, {0, 2, 3, 4}]
     y = [0, 0, 1, 1]
     binary_test_tree = BinaryDecisionTreeNode(x, y)
     binary_test_tree.split_recursively()
-    assert binary_test_tree.predict_class([0, 1, 1]) == 0
-    assert binary_test_tree.predict_class([1, 0, 0]) == 1
+    assert binary_test_tree.predict_class({1, 2}) == 0
+    assert binary_test_tree.predict_class({0}) == 1
+    assert binary_test_tree.predict_class({3, 4}) == 0
+    assert binary_test_tree.predict_class({5}) == 1
 
 
