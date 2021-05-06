@@ -2,6 +2,26 @@ import math
 from collections import Counter
 from operator import itemgetter
 
+class BinaryDecisionTree():
+    def __init__(self):
+        self.root = None
+
+    def fit(self, x, y, print_progress = False, progress_frequency = 100):
+        self.root = BinaryDecisionTreeNode(x, y)
+        leaf_nodes_to_split = [self.root]
+        i = 0
+        while len(leaf_nodes_to_split) > 0:
+            if print_progress and i % progress_frequency == 0:
+                print(i, len(leaf_nodes_to_split))
+            node = leaf_nodes_to_split.pop()
+            node.split()
+            for child in node.children.values():
+                leaf_nodes_to_split.append(child)
+            i += 1
+
+    def predict_class(self, x):
+        return self.root.predict_class(x)
+
 class BinaryDecisionTreeNode():
     """One node in a decision tree that can split into 2 branches"""
     def __init__(self, x, y, already_used_features = []):
@@ -16,14 +36,14 @@ class BinaryDecisionTreeNode():
 
     def split(self):
         """Split this into two on the feature that would lead to the biggest information gain"""
-        info_gain_for_all_features = information_gain(x, y, feature_mask=self.already_used_features)
+        info_gain_for_all_features = information_gain(self.x, self.y, feature_mask=self.already_used_features)
         # if no possible split leads to an information gain, don't split
         if len(info_gain_for_all_features) == 0 or max(info_gain_for_all_features.values()) == 0:            
             return
 
         self.is_leaf = False
         self.split_feature_index = dictionary_argmax(info_gain_for_all_features) # split on the feature that leads to the most information gain
-        good_x, bad_x, good_y, bad_y = split_on_binary_feature(x, y, self.split_feature_index)
+        good_x, bad_x, good_y, bad_y = split_on_binary_feature(self.x, self.y, self.split_feature_index)
 
         new_used_features = self.already_used_features + [self.split_feature_index]
         self.children = { 0: BinaryDecisionTreeNode(bad_x, bad_y, new_used_features), 1: BinaryDecisionTreeNode(good_x, good_y, new_used_features) }
@@ -107,13 +127,27 @@ if __name__ == "__main__":
     assert binary_test_tree.predict_class({1, 2}) == 1
     assert binary_test_tree.predict_class({0}) == 1
 
+    binary_test_tree = BinaryDecisionTree()
+    binary_test_tree.fit(x, y)
+    assert binary_test_tree.predict_class({1, 2}) == 1
+    assert binary_test_tree.predict_class({0}) == 1
+
+
     x = [{0, 1, 2}, {1, 2}, {0, 1}, {0, 2, 3, 4}]
     y = [0, 0, 1, 1]
     binary_test_tree = BinaryDecisionTreeNode(x, y)
     binary_test_tree.split_recursively()
     assert binary_test_tree.predict_class({1, 2}) == 0
     assert binary_test_tree.predict_class({0}) == 1
-    assert binary_test_tree.predict_class({3, 4}) == 0
-    assert binary_test_tree.predict_class({5}) == 1
+
+    binary_test_tree = BinaryDecisionTree()
+    binary_test_tree.fit(x, y)
+    assert binary_test_tree.predict_class({1, 2}) == 0
+    assert binary_test_tree.predict_class({0}) == 1
+
+
+
+
+
 
 
