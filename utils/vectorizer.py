@@ -6,7 +6,7 @@ import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 def parse_and_return_rows(file_path):
-    with open(file_path, 'r') as read_obj:
+    with open(file_path, 'r', encoding='utf-8') as read_obj:
         # pass the file object to reader() to get the reader object
         csv_reader = reader(read_obj)
         # Pass reader object to list() to get a list of lists
