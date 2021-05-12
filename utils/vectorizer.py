@@ -2,6 +2,9 @@ import numpy as np
 from csv import reader
 from collections import defaultdict 
 
+import pickle
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 def parse_and_return_rows(file_path):
     with open(file_path, 'r') as read_obj:
         # pass the file object to reader() to get the reader object
@@ -38,8 +41,26 @@ def return_count_vector(sent, index_word, len_vector):
     for item in sent:
         count_dict[item] += 1
         for key,item in count_dict.items():
-            vec[index_word[key]] = item
+            try:
+                vec[index_word[key]] = item
+            except:
+                pass
     return vec
 
 def preprocess_sentence(sent):
     return [w.lower() for w in sent.split(" ") if w.isalpha()]
+
+def fit_tfidf_vectorizer(corpus):
+    vectorizer = TfidfVectorizer()
+    vect = vectorizer.fit(corpus)
+    return vect
+
+def transform_tfidf_vectorizer(vect, sent):
+    return vect.transform(sent)
+
+def create_tfidf_corpus(list_of_rows):
+    corpus = []
+    for row in list_of_rows:
+        sent = row[1] + " " + row[2] + " "  + row[3] + " "  + row[4]
+        corpus.append(sent)
+    return corpus
