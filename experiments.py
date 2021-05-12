@@ -32,7 +32,9 @@ def run_cosine_similarity_exp(train_file_path, test_file_path):
         hyp1_sim.append(similarity.cosine_similarity(avg_obs_vec, hyp1_vec))
         hyp2_sim.append(similarity.cosine_similarity(avg_obs_vec, hyp2_vec))
 
-        print(count+=1)
+        count+=1
+
+        print(count)
 
     with open("hyp1_sim.txt", "w") as fp:
         json.dump(hyp1_sim, fp)
