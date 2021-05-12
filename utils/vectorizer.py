@@ -64,3 +64,17 @@ def create_tfidf_corpus(list_of_rows):
         sent = row[1] + " " + row[2] + " "  + row[3] + " "  + row[4]
         corpus.append(sent)
     return corpus
+
+def return_tfidf_row_lists(list_of_rows):
+    obs1 = []
+    obs2 = []
+    hyp1 = []
+    hyp2 = []
+
+    for row in list_of_rows:
+        obs1.append(row[1])
+        obs2.append(row[2])
+        hyp1.append(row[3])
+        hyp2.append(row[4])
+
+    return obs1, obs2, hyp1, hyp2
