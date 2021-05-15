@@ -15,16 +15,12 @@ def parse_and_return_rows(file_path):
 
 def return_len_and_vocabulary(list_of_rows):
     #clean the corpus.
-    sentences = []
-    vocab = []
+    vocab = set()
     for sent in list_of_rows:
         new_sent = sent[1] + " " + sent[2] + " " + sent[3] + " " + sent[4]
         sentence = preprocess_sentence(new_sent)
-        sentences.append(sentence)
-        for word in sentence:
-            if word not in vocab:
-                vocab.append(word)
-    return vocab, len(vocab)
+        vocab |= {word for word in sentence}
+    return list(vocab), len(vocab)
 
 def create_token_index(vocab):
     index_word = {}
