@@ -26,13 +26,15 @@ class BinaryDecisionTree():
         self.new_leaf_nodes = []
         self.total_nodes = 1
 
-    def expand_tree(self, subset_for_information_gain_calculation=None, num_threads=1):
+    def expand_tree(self, subset_for_information_gain_calculation=None, training_instance_threshold=None, num_threads=1):
         """
         Perform expansion of all nodes in self.leaf_nodes_to_split - all nodes in a single layer.
         Returns true if further expansion is possible, false if not.
         """
         while len(self.leaf_nodes_to_split) > 0:
             node = self.leaf_nodes_to_split.pop()
+            if training_instance_threshold is not None and len(node.x) < training_instance_threshold:
+                continue
             node.split(subset_for_information_gain_calculation, num_threads)
             for child in node.children.values():
                 self.new_leaf_nodes.append(child)
