@@ -6,7 +6,7 @@ import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 def parse_and_return_rows(file_path):
-    with open(file_path, 'r') as read_obj:
+    with open(file_path, 'r', encoding='utf-8') as read_obj:
         # pass the file object to reader() to get the reader object
         csv_reader = reader(read_obj)
         # Pass reader object to list() to get a list of lists
@@ -15,17 +15,12 @@ def parse_and_return_rows(file_path):
 
 def return_len_and_vocabulary(list_of_rows):
     #clean the corpus.
-    sentences = []
-    vocab = []
+    vocab = set()
     for sent in list_of_rows:
         new_sent = sent[1] + " " + sent[2] + " " + sent[3] + " " + sent[4]
-        x = new_sent.split(" ")
-        sentence = [w.lower() for w in x if w.isalpha() ]
-        sentences.append(sentence)
-        for word in sentence:
-            if word not in vocab:
-                vocab.append(word)
-    return vocab, len(vocab)
+        sentence = preprocess_sentence(new_sent)
+        vocab |= {word for word in sentence}
+    return list(vocab), len(vocab)
 
 def create_token_index(vocab):
     index_word = {}
@@ -46,6 +41,13 @@ def return_count_vector(sent, index_word, len_vector):
             except:
                 pass
     return vec
+
+def sparse_incidence_vector(sentence, word_to_index):
+    """
+    Given a string and a dictionary that maps words to their index in the vocabulary, 
+    returns a set containing all the indexes of the words that the sentence contains.
+    """
+    return { word_to_index[w] for w in preprocess_sentence(sentence) if w in word_to_index }
 
 def preprocess_sentence(sent):
     return [w.lower() for w in sent.split(" ") if w.isalpha()]
