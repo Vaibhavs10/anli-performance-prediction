@@ -1,0 +1,14 @@
+{
+    "experiment_id":"decision_tree_baseline",   
+    "result_file_name":"experiment_results/decision_tree_baseline.txt",
+    "trace": true,     
+    
+    "num_threads":5,
+    "accuracy_print_frequency":10,
+    "hyperparameters" : {
+        "max_depth":100,
+        "subset_size":3000,
+        "feature_removal_threshold":100,
+        "training_instance_threshold":100 
+    }
+ }
