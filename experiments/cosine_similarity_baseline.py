@@ -1,24 +1,16 @@
 import json
 import random
 
-from utils import similarity
-from utils import vectorizer
-from utils import evaluation
+from models.similarity.cosine_similarity import cosine_similarity
+from feature_engineering import vectorizer
+from data import data_loader
+from models import evaluation
 
 # Experiment1: Cosine similarity between averaged obs1, obs2 vectors and hypothesis vectors
 
-train_file_path = "utils/data/processed_data/train.csv"
-test_file_path = "utils/data/processed_data/dev.csv"
-
-hyp1_sim_file_path = "hyp1_sim.txt"
-hyp2_sim_file_path = "hyp2_sim.txt"
-
-hyp1_tfidf_sim_file_path = "hyp1_tfidf_sim.txt"
-hyp2_tfidf_sim_file_path = "hyp2_tfidf_sim.txt"
-
 def run_cosine_similarity_exp(train_file_path, test_file_path):
-    train_list_of_rows = vectorizer.parse_and_return_rows(train_file_path)
-    test_list_of_rows = vectorizer.parse_and_return_rows(test_file_path)
+    train_list_of_rows = data_loader.parse_and_return_rows(train_file_path)
+    test_list_of_rows = data_loader.parse_and_return_rows(test_file_path)
     train_vocab, train_len_vocab = vectorizer.return_len_and_vocabulary(train_list_of_rows)
     index_word = vectorizer.create_token_index(train_vocab)
     hyp1_sim = []
@@ -37,8 +29,8 @@ def run_cosine_similarity_exp(train_file_path, test_file_path):
 
         avg_obs_vec = (obs1_vec + obs2_vec)/2
 
-        hyp1_sim.append(similarity.cosine_similarity(avg_obs_vec, hyp1_vec))
-        hyp2_sim.append(similarity.cosine_similarity(avg_obs_vec, hyp2_vec))
+        hyp1_sim.append(cosine_similarity(avg_obs_vec, hyp1_vec))
+        hyp2_sim.append(cosine_similarity(avg_obs_vec, hyp2_vec))
 
         count+=1
 
@@ -78,8 +70,8 @@ def calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_f
     return accuracy
 
 def run_tfidf_similarity_exp(train_file_path, test_file_path):
-    list_of_rows = vectorizer.parse_and_return_rows(train_file_path)
-    test_list_of_rows = vectorizer.parse_and_return_rows(test_file_path)
+    list_of_rows = data_loader.parse_and_return_rows(train_file_path)
+    test_list_of_rows = data_loader.parse_and_return_rows(test_file_path)
     obs1, obs2, hyp1, hyp2 = vectorizer.return_tfidf_row_lists(test_list_of_rows)
     corpus = vectorizer.create_tfidf_corpus(list_of_rows)
     vect = vectorizer.fit_tfidf_vectorizer(corpus)
@@ -99,8 +91,8 @@ def run_tfidf_similarity_exp(train_file_path, test_file_path):
 
     for i in range(len(obs1_vec)):
         avg_obs_vec = (obs1_vec[i] + obs2_vec[i])/2
-        hyp1_sim.append(similarity.cosine_similarity(avg_obs_vec, hyp1_vec[i]))
-        hyp2_sim.append(similarity.cosine_similarity(avg_obs_vec, hyp2_vec[i]))
+        hyp1_sim.append(cosine_similarity(avg_obs_vec, hyp1_vec[i]))
+        hyp2_sim.append(cosine_similarity(avg_obs_vec, hyp2_vec[i]))
 
     print(len(hyp1_vec))
     print(len(hyp2_vec))
@@ -110,11 +102,3 @@ def run_tfidf_similarity_exp(train_file_path, test_file_path):
     
     with open("hyp2_tfidf_sim.txt", "w") as fp:
         json.dump(hyp2_sim, fp)
-
-
-#run_tfidf_similarity_exp(train_file_path, test_file_path)
-accuracy = calc_test_similarity_accuracy(test_file_path, hyp1_tfidf_sim_file_path, hyp2_tfidf_sim_file_path)
-print(accuracy)
-#run_cosine_similarity_exp(train_file_path, test_file_path)
-#accuracy = calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_file_path)
-#print(accuracy)

@@ -1,17 +1,8 @@
 import numpy as np
-from csv import reader
 from collections import defaultdict 
 
 import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-def parse_and_return_rows(file_path):
-    with open(file_path, 'r', encoding='utf-8') as read_obj:
-        # pass the file object to reader() to get the reader object
-        csv_reader = reader(read_obj)
-        # Pass reader object to list() to get a list of lists
-        list_of_rows = list(csv_reader)
-    return list_of_rows
 
 def return_len_and_vocabulary(list_of_rows):
     #clean the corpus.
