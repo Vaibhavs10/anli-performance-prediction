@@ -1,61 +1,57 @@
 import json
+import importlib
 import argparse
+import time
+import os
 # setting up command line interface
 parser = argparse.ArgumentParser(description='Various experiments for abductive natural language inferrence.')
 parser.add_argument('--infile', nargs=1,
                     help="JSON file containing details about which experiment to run",
                     type=argparse.FileType('r'))
+
+# get arguments that were passed through command line
 args = parser.parse_args()
 
-from experiments.decision_tree_baseline import run_decision_tree_experiment
-from experiments.cosine_similarity_baseline import run_cosine_similarity_exp, run_tfidf_similarity_exp, calc_test_similarity_accuracy
 from experiments.human_baseline import run_human_baseline_experiment
 
-def get_param(dict, key, fallback_value):
-    if key in dict:
-        return dict[key]
-    else:
-        return fallback_value
 
-def run_decision_tree_baseline_experiment(ex):
-    hp = ex["hyperparameters"]
-    run_decision_tree_experiment(
-        max_depth=get_param(hp, "max_depth", 100),
-        subset_size=get_param(hp, "subset_size", 3000),
-        feature_removal_threshold=get_param(hp, "feature_removal_threshold", 100),
-        training_instance_threshold=get_param(hp, "training_instance_threshold", 100),
-        result_file_name=get_param(ex, "result_file_name", 'result.txt'),
-        num_threads=get_param(ex, "num_threads", 5),
-        print_logs=get_param(ex, "trace", True),
-        accuracy_print_frequency=get_param(ex, "accuracy_print_frequency", 10),
-    )
+def save_results(experiment_definition, labels, logs):
+    id = experiment_definition['experiment_id']
+    timestamp = time.strftime("%m_%d__%H_%M_%S", time.gmtime())
+    base_path = os.path.join('experiment_results', id + '_' + timestamp)
+    os.mkdir(base_path)
 
+    file_name = "experiment.json"
+    file = open(os.path.join(base_path, file_name), "w")
+    file.writelines(json.dumps(experiment_definition, indent=4))
+    file.close()
 
-def run_cosine_similarity_baseline_experiments(ex):
-    train_file_path = "data/processed_data/train.csv"
-    test_file_path = "data/processed_data/dev.csv"
+    file_name = "labels.lst"
+    file = open(os.path.join(base_path, file_name), "w")
+    for l in labels:
+        file.write(l + '\n')
+    file.close()
 
-    hyp1_sim_file_path = "hyp1_sim.txt"
-    hyp2_sim_file_path = "hyp2_sim.txt"
+    if logs:
+        file_name = "log.txt"
+        file = open(os.path.join(base_path, file_name), "w")
+        file.writelines(logs)
+        file.close()
 
-    hyp1_tfidf_sim_file_path = "hyp1_tfidf_sim.txt"
-    hyp2_tfidf_sim_file_path = "hyp2_tfidf_sim.txt"
-
-    #run_tfidf_similarity_exp(train_file_path, test_file_path)
-    #accuracy = calc_test_similarity_accuracy(test_file_path, hyp1_tfidf_sim_file_path, hyp2_tfidf_sim_file_path)
-    #print(accuracy)
-    run_cosine_similarity_exp(train_file_path, test_file_path)
-    accuracy = calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_file_path)
-    print(accuracy)
 
 if __name__ == "__main__":
     if args.infile is not None and args.infile[0] is not None:
+        # load the passed json file that contains details about the experiment to run
         experiment_definition = json.load(args.infile[0])
         id = experiment_definition['experiment_id']
-        if id == "decision_tree_baseline":
-            run_decision_tree_baseline_experiment(experiment_definition)
-        elif id == "cosine_similarity_baseline":
-            run_cosine_similarity_baseline_experiments(experiment_definition)
+        try:
+            # load the appropriate .py file from the experiments folder
+            experiment = importlib.import_module("experiments." + id)
+            labels, logs = experiment.run(experiment_definition)
+            if labels is not None:
+                save_results(experiment_definition, labels, logs)
+        except ModuleNotFoundError:
+            print("Experiment at experiments.%s not found" % id)
     else:
         print("Please pass in a .json file defining the experiment to run with --infile <file>")
         input("Press Enter to run a human baseline...")
