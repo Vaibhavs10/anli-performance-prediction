@@ -11,17 +11,18 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 def _predict_labels(model, data):
     labels = []
     for instance in data:
-        obs = model[instance[0] + instance[1]]
-        hyp1 = model[instance[2]]
-        hyp2 = model[instance[3]]
-
-        s1 = spatial.distance.cosine(obs, hyp1)
-        s2 = spatial.distance.cosine(obs, hyp2)
+        obs = instance[0] + instance[1]
+        hyp1 = instance[2]
+        hyp2 = instance[3]
+        
+        s1 = model.wv.wmdistance(obs, hyp1)
+        s2 = model.wv.wmdistance(obs, hyp2)
         if s1 < s2:
             labels.append('1')
         else:
             labels.append('2')
     return labels
+
 
 def _load_data(dev_data_loader_name, embedding_data_loader_name, trace=False):
     embedding_training_corpus = None
@@ -39,9 +40,10 @@ def _get_param(dict, key, fallback_value):
     else:
         return fallback_value
 
-def _run_vector_mixture_experiment(    
+def _run_wmd_similarity_experiment(    
     use_pre_trained_embeddings,
     embedding_type,
+    skipgram,
     dev_data_loader_name,
     embedding_training_data_loader_name,
     trace=True):
@@ -58,12 +60,11 @@ def _run_vector_mixture_experiment(
     else:
         if trace:
             print("Training %s embedding model..." % embedding_type)
-        embedding_model = word_embeddings.train_embedding_model(embedding_training_corpus, type=embedding_type)
-
-    model = UnweightedVectorMixtureModel(embedding_model)
+        embedding_model = word_embeddings.train_embedding_model(embedding_training_corpus, type=embedding_type, skipgram=skipgram)
+        
     if trace:
         print("Predicting labels on devset...")
-    predicted_labels = _predict_labels(model, dev_documents)
+    predicted_labels = _predict_labels(embedding_model, dev_documents)
     real_labels = [x[4] for x in dev_documents]
     acc = evaluation.calculate_accuracy(predicted_labels, real_labels)
 
@@ -76,10 +77,11 @@ def _run_vector_mixture_experiment(
 
 def run(ex):
     hp = ex["hyperparameters"]
-    return _run_vector_mixture_experiment(
+    return _run_wmd_similarity_experiment(
         use_pre_trained_embeddings=_get_param(hp, "pre_trained_embeddings", False),
         embedding_type=_get_param(hp, "embedding_type", "word2vec"),
+        skipgram=_get_param(hp, "skipgram", False),
         dev_data_loader_name=_get_param(hp, "dev_data_loader_name", "word2vec"),
-        embedding_training_data_loader_name=_get_param(hp, "embedding_training_data_loader_name", "word2vec"),
+        embedding_training_data_loader_name=_get_param(hp, "embedding_training_data_loader_name", ""),
         trace=_get_param(ex, "trace", True),
         )

@@ -1,11 +1,12 @@
 import gensim
+from gensim import downloader
 
 
-def train_embedding_model(documents, type="word2vec", vector_size=300, min_count=100):
+def train_embedding_model(documents, type="word2vec", vector_size=300, min_count=100, skipgram=0):
     if type=="word2vec":
-        return gensim.models.Word2Vec(sentences=documents, vector_size=vector_size, min_count=min_count)
+        return gensim.models.Word2Vec(sentences=documents, vector_size=vector_size, min_count=min_count, sg=skipgram)
     elif type=="fasttext":
-        return gensim.models.FastText(sentences=documents, vector_size=vector_size, min_count=min_count)
+        return gensim.models.FastText(sentences=documents, vector_size=vector_size, min_count=min_count, sg=skipgram)
     else:
         raise ValueError
 

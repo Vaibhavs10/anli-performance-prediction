@@ -9,6 +9,7 @@ def load_data():
     nltk.tokenize.word_tokenize(row[4].lower()),
     row[5]) for row in rows]
 
-    corpus = [row[0] + row[1] + row[2] + row[3] for row in documents]
-        
+    corpus = [[doc[0], doc[1], doc[2], doc[3]] for doc in documents]
+    corpus = [item for sublist in corpus for item in sublist]
+
     return documents, corpus

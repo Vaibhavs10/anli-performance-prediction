@@ -1,0 +1,38 @@
+{
+    "experiments": [
+        {
+            "experiment_id":"wmd_similarity",   
+            "trace": true,     
+
+            "hyperparameters" : {
+                "pre_trained_embeddings":false,
+                "embedding_type":"word2vec",
+                "dev_data_loader_name": "data_loaders.dev_data_loader",
+                "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "skipgram":false
+            }
+        },
+        {
+            "experiment_id":"wmd_similarity",   
+            "trace": true,     
+
+            "hyperparameters" : {
+                "pre_trained_embeddings":false,
+                "embedding_type":"fasttext",
+                "dev_data_loader_name": "data_loaders.dev_data_loader",
+                "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "skipgram":false
+            }
+        },
+        {
+            "experiment_id":"wmd_similarity",   
+            "trace": true,     
+
+            "hyperparameters" : {
+                "pre_trained_embeddings":true,
+                "embedding_type":"fasttext-wiki-news-subwords-300",
+                "dev_data_loader_name": "data_loaders.dev_data_loader"
+            }
+        }
+    ]
+}

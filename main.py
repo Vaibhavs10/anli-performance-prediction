@@ -40,18 +40,22 @@ def save_results(experiment_definition, labels, logs):
 
 
 if __name__ == "__main__":
+    #args.infile = [open('wmd_similarity.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
     if args.infile is not None and args.infile[0] is not None:
         # load the passed json file that contains details about the experiment to run
-        experiment_definition = json.load(args.infile[0])
-        id = experiment_definition['experiment_id']
-        try:
-            # load the appropriate .py file from the experiments folder
-            experiment = importlib.import_module("experiments." + id)
+        all_experiments = json.load(args.infile[0])['experiments']
+        for experiment_definition in all_experiments:
+            id = experiment_definition['experiment_id']
+            try:
+                # load the appropriate .py file from the experiments folder
+                experiment = importlib.import_module("experiments." + id)
+            except ModuleNotFoundError:
+                print("Experiment at experiments.%s not found" % id)
+                continue
             labels, logs = experiment.run(experiment_definition)
             if labels is not None:
                 save_results(experiment_definition, labels, logs)
-        except ModuleNotFoundError:
-            print("Experiment at experiments.%s not found" % id)
+
     else:
         print("Please pass in a .json file defining the experiment to run with --infile <file>")
         input("Press Enter to run a human baseline...")
