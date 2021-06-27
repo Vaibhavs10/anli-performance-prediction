@@ -1,0 +1,15 @@
+{
+    "experiments": [
+        {
+            "experiment_id":"doc2vec_similarity",   
+            "trace": true,     
+
+            "hyperparameters" : {
+                "pre_trained_embeddings":false,
+                "embedding_type":"doc2vec",
+                "dev_data_loader_name": "data_loaders.dev_data_loader",
+                "embedding_training_data_loader_name": "data_loaders.train_data_loader"
+            }
+        }
+    ]
+}

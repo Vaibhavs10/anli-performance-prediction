@@ -2,3 +2,6 @@
 __pycache__
 experiment_results/*
 !experiment_results/.gitkeep
+
+data/ROCStories/*
+!data/ROCStories/readme.txt

@@ -113,7 +113,7 @@ def _save_results(logs, train_accuracies, dev_accuracies, file_name):
         file.write(message)
     file.close()
 
-def run_decision_tree_experiment(
+def _run_decision_tree_experiment(
     max_depth,
     subset_size,
     feature_removal_threshold,
@@ -156,3 +156,24 @@ def run_decision_tree_experiment(
         print("Final dev accuracy: ", dev_accuracies[-1])
     _save_results(logs, train_accuracies, dev_accuracies, result_file_name)
     return logs, tree
+
+def _get_param(dict, key, fallback_value):
+    if key in dict:
+        return dict[key]
+    else:
+        return fallback_value
+
+def run(ex):
+    hp = ex["hyperparameters"]
+    _run_decision_tree_experiment(
+        max_depth=_get_param(hp, "max_depth", 100),
+        subset_size=_get_param(hp, "subset_size", 3000),
+        feature_removal_threshold=_get_param(hp, "feature_removal_threshold", 100),
+        training_instance_threshold=_get_param(hp, "training_instance_threshold", 100),
+        result_file_name=_get_param(ex, "result_file_name", 'result.txt'),
+        num_threads=_get_param(ex, "num_threads", 5),
+        print_logs=_get_param(ex, "trace", True),
+        accuracy_print_frequency=_get_param(ex, "accuracy_print_frequency", 10),
+    )
+
+    return None, None, None
