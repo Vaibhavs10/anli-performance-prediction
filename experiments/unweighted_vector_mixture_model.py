@@ -9,6 +9,8 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 def _run_vector_mixture_experiment(    
     use_pre_trained_embeddings,
     embedding_type,
+    vector_size,
+    min_count,
     skipgram,
     dev_data_loader_name,
     embedding_training_data_loader_name):
@@ -23,7 +25,13 @@ def _run_vector_mixture_experiment(
         embedding_model = word_embeddings.get_pretrained_embeddings(embedding_type)
     else:
         printt("Training %s embedding model..." % embedding_type)
-        embedding_model = word_embeddings.train_embedding_model(embedding_training_corpus, type=embedding_type, skipgram=skipgram)
+        embedding_model = word_embeddings.train_embedding_model(
+            embedding_training_corpus, 
+            type=embedding_type, 
+            vector_size=vector_size, 
+            min_count=min_count, 
+            skipgram=skipgram
+            )
         
     model = UnweightedVectorMixtureModel(embedding_model)
 
@@ -62,6 +70,8 @@ def run(ex):
     return _run_vector_mixture_experiment(
         use_pre_trained_embeddings=get_param(hp, "pre_trained_embeddings", False),
         embedding_type=get_param(hp, "embedding_type", "word2vec"),
+        vector_size=get_param(hp, "vector_size", 100),
+        min_count=get_param(hp, "min_count", 10),
         skipgram=get_param(hp, "skipgram", False),
         dev_data_loader_name=get_param(hp, "dev_data_loader_name", "word2vec"),
         embedding_training_data_loader_name=get_param(hp, "embedding_training_data_loader_name", "word2vec")

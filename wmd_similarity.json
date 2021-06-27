@@ -9,6 +9,8 @@
                 "embedding_type":"word2vec",
                 "dev_data_loader_name": "data_loaders.dev_data_loader",
                 "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "vector_size":100,
+                "min_count":10,
                 "skipgram":false
             }
         },
@@ -21,6 +23,8 @@
                 "embedding_type":"fasttext",
                 "dev_data_loader_name": "data_loaders.dev_data_loader",
                 "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "vector_size":100,
+                "min_count":10,
                 "skipgram":false
             }
         },

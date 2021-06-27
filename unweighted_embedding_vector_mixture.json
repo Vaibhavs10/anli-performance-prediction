@@ -9,6 +9,8 @@
                 "pre_trained_embeddings":false,
                 "embedding_type":"word2vec",
                 "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "vector_size":100,
+                "min_count":10,
                 "skipgram":true
             }
         },
@@ -21,6 +23,8 @@
                 "pre_trained_embeddings":false,
                 "embedding_type":"fasttext",
                 "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "vector_size":100,
+                "min_count":10,
                 "skipgram":true
             }
         },
@@ -33,6 +37,8 @@
                 "pre_trained_embeddings":false,
                 "embedding_type":"fasttext",
                 "embedding_training_data_loader_name": "data_loaders.train_data_loader",
+                "vector_size":100,
+                "min_count":10,
                 "skipgram":true
             }
         },
