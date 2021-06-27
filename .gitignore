@@ -5,6 +5,3 @@ experiment_results/*
 
 data/ROCStories/*
 !data/ROCStories/readme.txt
-
-data/books/*
-!data/books/readme.txt
