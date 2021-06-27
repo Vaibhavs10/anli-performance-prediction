@@ -3,6 +3,8 @@ import data.data_loader as data_loader
 
 def load_data():
     rows = data_loader.parse_and_return_rows("data/processed_data/dev.csv")
+
+    # tokenize texts
     documents = [(nltk.tokenize.word_tokenize(row[1].lower()), 
     nltk.tokenize.word_tokenize(row[2].lower()), 
     nltk.tokenize.word_tokenize(row[3].lower()), 
