@@ -33,7 +33,7 @@ def _run_wmd_similarity_experiment(
     printt("Accuracy: " + str(acc))
     logs.append("Accuracy: " + str(acc))
 
-    return predicted_labels, logs
+    return predicted_labels, acc, logs
 
 
 def run(ex):

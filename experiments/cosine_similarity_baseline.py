@@ -120,3 +120,5 @@ def run(ex):
     _run_cosine_similarity_exp(train_file_path, test_file_path)
     accuracy = _calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_file_path)
     print(accuracy)
+
+    return None, None, None

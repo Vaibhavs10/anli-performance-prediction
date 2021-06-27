@@ -175,3 +175,5 @@ def run(ex):
         print_logs=_get_param(ex, "trace", True),
         accuracy_print_frequency=_get_param(ex, "accuracy_print_frequency", 10),
     )
+
+    return None, None, None
