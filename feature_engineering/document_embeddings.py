@@ -1,6 +1,5 @@
-import gensim
-from gensim import downloader
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from sentence_transformers import SentenceTransformer
 
 
 def train_embedding_model(documents, embedding_type, vector_size=300, min_count=10):
@@ -10,5 +9,5 @@ def train_embedding_model(documents, embedding_type, vector_size=300, min_count=
     else:
         raise NotImplementedError
 
-def get_pretrained_embeddings(type):
-    raise NotImplementedError
+def get_pretrained_embeddings(embedding_type):
+    return SentenceTransformer(embedding_type) # pre-trained models from here https://www.sbert.net/docs/pretrained_models.html
