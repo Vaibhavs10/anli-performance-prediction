@@ -37,7 +37,7 @@ def _predict_labels_cosine(model, data):
 
     return labels
 
-def _run_bert_similarity_experiment(    
+def _run_transformer_similarity_experiment(    
     embedding_type,
     dev_data_loader_name):
 
@@ -46,10 +46,10 @@ def _run_bert_similarity_experiment(
     printt("Loading data...")
     dev_documents = _load_data(dev_data_loader_name)
 
-    bert_model = document_embeddings.get_pretrained_embeddings(embedding_type)
+    transformer_model = document_embeddings.get_pretrained_embeddings(embedding_type)
 
     printt("Predicting labels on devset...")
-    predicted_labels = _predict_labels_cosine(bert_model, dev_documents)
+    predicted_labels = _predict_labels_cosine(transformer_model, dev_documents)
     real_labels = [x[3] for x in dev_documents]
     acc = evaluation.calculate_accuracy(predicted_labels, real_labels)
 
@@ -61,14 +61,14 @@ def _run_bert_similarity_experiment(
 
 def run(ex):
     """
-    BERT sentence embeddings, compared using cosine similarity.
+    Transformer sentence embeddings, compared using cosine similarity.
     Takes in a dictionary with all the hyperparameters, for example:
         {
             "trace": true,     
 
             "hyperparameters" : {
-                "embedding_type":"fasttext",
-                "embedding_training_data_loader_name": "data_loaders.ROC_data_loader",
+                "embedding_type":"bert-base-uncased",
+                "dev_data_loader_name": "data_loaders.dev_data_loader"
             }
         }
     
@@ -77,7 +77,7 @@ def run(ex):
     set_trace(get_param(ex, "trace", True))
     
     hp = ex["hyperparameters"]
-    return _run_bert_similarity_experiment(
+    return _run_transformer_similarity_experiment(
         embedding_type=get_param(hp, "embedding_type", "word2vec"),
         dev_data_loader_name=get_param(hp, "dev_data_loader_name", None)
     )
