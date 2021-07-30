@@ -1,0 +1,20 @@
+{
+  "experiments": [
+      {
+          "experiment_id":"LSTM_classification",   
+          "trace": true,     
+
+          "hyperparameters" : {
+            "num_epochs": 25,
+            "learning_rate": 0.001,
+            "batch_size": 64,
+            "embedding_type": "glove.6B.200d",
+            "embedding_dim": 200,
+            "hidden_dim": 256,
+            "num_layers": 2,
+            "bidirectional": true,
+            "dropout": 0.2
+          }
+      }
+  ]
+}

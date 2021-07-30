@@ -38,11 +38,12 @@ def save_results(experiment_definition, labels, accuracy, logs):
     file.close()
 
     # save labels
-    file_name = "labels.lst"
-    file = open(os.path.join(base_path, file_name), "w")
-    for l in labels:
-        file.write(l + '\n')
-    file.close()
+    if labels:
+        file_name = "labels.lst"
+        file = open(os.path.join(base_path, file_name), "w")
+        for l in labels:
+            file.write(l + '\n')
+        file.close()
 
     # save logs, if any were returned
     if logs:
