@@ -71,7 +71,7 @@ def run(ex):
     return _run_vector_mixture_experiment(
         use_pre_trained_embeddings=get_param(hp, "pre_trained_embeddings", False),
         embedding_type=get_param(hp, "embedding_type", "word2vec"),
-        dev_data_loader_name=get_param(hp, "dev_data_loader_name", "word2vec"),
+        dev_data_loader_name=get_param(hp, "dev_data_loader_name", None),
         embedding_training_data_loader_name=get_param(hp, "embedding_training_data_loader_name", "word2vec"),
         skipgram=get_param(hp, "skipgram", False),
         vector_size=get_param(hp, "vector_size", 100),

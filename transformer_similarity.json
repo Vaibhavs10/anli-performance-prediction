@@ -1,12 +1,12 @@
 {
     "experiments": [
         {
-            "experiment_id":"bert_similarity",   
+            "experiment_id":"transformer_similarity",   
             "try_combinations":["embedding_type"],
             "trace": true,     
 
             "hyperparameters" : {
-                "embedding_type":["paraphrase-mpnet-base-v2"],
+                "embedding_type":["xlnet-base-cased", "distilroberta-base", "distilbert-base", "distilbert-base-uncased", "bert-base-uncased", "stsb-roberta-base-v2", "stsb-mpnet-base-v2"],
                 "dev_data_loader_name": "data_loaders.dev_data_loader"
             }
         }
