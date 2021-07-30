@@ -32,12 +32,12 @@
         {
             "experiment_id":"unweighted_vector_mixture_model",   
             "trace": true,     
+            "try_combinations": ["embedding_type"],
 
             "hyperparameters" : {
                 "dev_data_loader_name": "data_loaders.dev_data_loader",
                 "pre_trained_embeddings":true,
-                "embedding_type":"fasttext-wiki-news-subwords-300",
-                "embedding_training_data_loader_name": "data_loaders.ROC_data_loader"
+                "embedding_type":["fasttext-wiki-news-subwords-300", "glove-wiki-gigaword-300"]
             }
         }   
     ]

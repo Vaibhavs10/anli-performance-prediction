@@ -75,7 +75,7 @@ def run(ex):
     return _run_doc2vec_experiment(
         use_pre_trained_embeddings=get_param(hp, "pre_trained_embeddings", False),
         embedding_type=get_param(hp, "embedding_type", "doc2vec"),
-        dev_data_loader_name=get_param(hp, "dev_data_loader_name", "word2vec"),
+        dev_data_loader_name=get_param(hp, "dev_data_loader_name", None),
         embedding_training_data_loader_name=get_param(hp, "embedding_training_data_loader_name", "word2vec"),
         vector_size=get_param(hp, "vector_size", 100),
         min_count=get_param(hp, "min_count", 10),

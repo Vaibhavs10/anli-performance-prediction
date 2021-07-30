@@ -79,5 +79,5 @@ def run(ex):
     hp = ex["hyperparameters"]
     return _run_bert_similarity_experiment(
         embedding_type=get_param(hp, "embedding_type", "word2vec"),
-        dev_data_loader_name=get_param(hp, "dev_data_loader_name", "word2vec")
+        dev_data_loader_name=get_param(hp, "dev_data_loader_name", None)
     )

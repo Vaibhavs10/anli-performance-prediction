@@ -71,6 +71,6 @@ def run(ex):
         skipgram=get_param(hp, "skipgram", False),
         vector_size=get_param(hp, "vector_size", 100),
         min_count=get_param(hp, "min_count", 10),
-        dev_data_loader_name=get_param(hp, "dev_data_loader_name", "word2vec"),
+        dev_data_loader_name=get_param(hp, "dev_data_loader_name", None),
         embedding_training_data_loader_name=get_param(hp, "embedding_training_data_loader_name", "")
     )
