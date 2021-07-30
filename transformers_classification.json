@@ -1,0 +1,19 @@
+{
+    "experiments": [
+        {
+            "experiment_id":"transformers_classification",
+            "trace": true,   
+
+            "hyperparameters" : {
+                "batch_size": 4, 
+                "folder_name": "transformer_test_model", 
+                "lr":5e-5, 
+                "train_epochs":3, 
+                "wgt_decay":0.01, 
+                "model_checkpoint":"bert-base-uncased", 
+                "train_file_path":"data/processed_data/train.csv", 
+                "val_file_path":"data/processed_data/dev.csv"
+            }
+        }
+    ]
+}
