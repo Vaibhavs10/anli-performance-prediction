@@ -1,0 +1,13 @@
+{
+    "experiments": [
+        {
+            "experiment_id":"cosine_similarity_baseline",
+            "trace": true,   
+
+            "hyperparameters" : {
+                "train_file_path" : "data/processed_data/train.csv",
+                "test_file_path" : "data/processed_data/dev.csv"
+            }
+        }
+    ]
+}

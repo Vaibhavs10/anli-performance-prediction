@@ -6,9 +6,11 @@ from feature_engineering import vectorizer
 from data import data_loader
 from models import evaluation
 
+from experiments.experiment_utilities import get_param
+
 # Experiment1: Cosine similarity between averaged obs1, obs2 vectors and hypothesis vectors
 
-def _run_cosine_similarity_exp(train_file_path, test_file_path):
+def _run_cosine_similarity_exp(train_file_path, test_file_path, ):
     train_list_of_rows = data_loader.parse_and_return_rows(train_file_path)
     test_list_of_rows = data_loader.parse_and_return_rows(test_file_path)
     train_vocab, train_len_vocab = vectorizer.return_len_and_vocabulary(train_list_of_rows)
@@ -34,21 +36,9 @@ def _run_cosine_similarity_exp(train_file_path, test_file_path):
 
         count+=1
 
-        print(count)
+    return hyp1_sim, hyp2_sim
 
-    with open("hyp1_sim.txt", "w") as fp:
-        json.dump(hyp1_sim, fp)
-
-    with open("hyp2_sim.txt", "w") as fp:
-        json.dump(hyp2_sim, fp)
-
-def _calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_file_path):
-
-    with open(hyp1_sim_file_path, "r") as fp:
-        hyp1_sim = json.load(fp)
-
-    with open(hyp2_sim_file_path, "r") as fp:
-        hyp2_sim = json.load(fp)
+def _calc_test_similarity_accuracy(test_file_path, hyp1_sim, hyp2_sim):
 
     pred_list = []
 
@@ -61,64 +51,23 @@ def _calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_
             rand_choice = random.choice(["1","2"])
             pred_list.append(rand_choice)
     
-    test_list_of_rows = vectorizer.parse_and_return_rows(test_file_path)
+    test_list_of_rows = data_loader.parse_and_return_rows(test_file_path)
     orig_list = []
     for row in test_list_of_rows:
         orig_list.append(str(row[5]))
 
     accuracy = evaluation.calculate_accuracy(pred_list, orig_list)
-    return accuracy
+    return accuracy, pred_list
 
-def _run_tfidf_similarity_exp(train_file_path, test_file_path):
-    list_of_rows = data_loader.parse_and_return_rows(train_file_path)
-    test_list_of_rows = data_loader.parse_and_return_rows(test_file_path)
-    obs1, obs2, hyp1, hyp2 = vectorizer.return_tfidf_row_lists(test_list_of_rows)
-    corpus = vectorizer.create_tfidf_corpus(list_of_rows)
-    vect = vectorizer.fit_tfidf_vectorizer(corpus)
-    
-    hyp1_sim = []
-    hyp2_sim = []
-    
-    obs1_vec = vectorizer.transform_tfidf_vectorizer(vect, obs1).toarray()
-    obs2_vec = vectorizer.transform_tfidf_vectorizer(vect, obs2).toarray()
-    hyp1_vec = vectorizer.transform_tfidf_vectorizer(vect, hyp1).toarray()
-    hyp2_vec = vectorizer.transform_tfidf_vectorizer(vect, hyp2).toarray()
+def _run_cosine_similarity_baseline(train_file_path, test_file_path):
 
-    print(len(obs1_vec))
-    print(len(obs2_vec))
-    print(len(hyp1_vec))
-    print(len(hyp2_vec))
+    hyp1_sim, hyp2_sim = _run_cosine_similarity_exp(train_file_path, test_file_path)
+    accuracy, pred_list = _calc_test_similarity_accuracy(test_file_path, hyp1_sim, hyp2_sim)
 
-    for i in range(len(obs1_vec)):
-        avg_obs_vec = (obs1_vec[i] + obs2_vec[i])/2
-        hyp1_sim.append(cosine_similarity(avg_obs_vec, hyp1_vec[i]))
-        hyp2_sim.append(cosine_similarity(avg_obs_vec, hyp2_vec[i]))
+    return pred_list, accuracy, []
 
-    print(len(hyp1_vec))
-    print(len(hyp2_vec))
-
-    with open("hyp1_tfidf_sim.txt", "w") as fp:
-        json.dump(hyp1_sim, fp)
-    
-    with open("hyp2_tfidf_sim.txt", "w") as fp:
-        json.dump(hyp2_sim, fp)
-
-        
 def run(ex):
-    train_file_path = "data/processed_data/train.csv"
-    test_file_path = "data/processed_data/dev.csv"
+    hp = ex["hyperparameters"]
 
-    hyp1_sim_file_path = "hyp1_sim.txt"
-    hyp2_sim_file_path = "hyp2_sim.txt"
-
-    hyp1_tfidf_sim_file_path = "hyp1_tfidf_sim.txt"
-    hyp2_tfidf_sim_file_path = "hyp2_tfidf_sim.txt"
-
-    #run_tfidf_similarity_exp(train_file_path, test_file_path)
-    #accuracy = calc_test_similarity_accuracy(test_file_path, hyp1_tfidf_sim_file_path, hyp2_tfidf_sim_file_path)
-    #print(accuracy)
-    _run_cosine_similarity_exp(train_file_path, test_file_path)
-    accuracy = _calc_test_similarity_accuracy(test_file_path, hyp1_sim_file_path, hyp2_sim_file_path)
-    print(accuracy)
-
-    return None, None, None
+    return _run_cosine_similarity_baseline(train_file_path=get_param(hp, "train_file_path", None),
+        test_file_path=get_param(hp, "test_file_path", None))
