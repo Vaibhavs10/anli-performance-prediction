@@ -1,3 +1,11 @@
+"""
+Author: Vaibhav Srivastav
+
+Script to train a LSTM model for Alpha NLI task
+
+The script automatically saves all the checkpoints and pytorch model
+"""
+
 import time
 
 from csv import reader

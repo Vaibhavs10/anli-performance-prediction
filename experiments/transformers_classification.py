@@ -1,3 +1,11 @@
+"""
+Author: Vaibhav Srivastav
+
+Script to train a Transformer model for Alpha NLI task
+
+The script automatically saves all the checkpoint sand tokenizer files
+"""
+
 import csv
 from csv import reader
 import pandas as pd

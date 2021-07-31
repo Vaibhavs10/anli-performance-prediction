@@ -1,3 +1,11 @@
+"""
+Author: Vaibhav Srivastav
+
+Script to run the cosine similarity baseline file
+
+The script automatically saves and returns the labels and accuracy for the experiment
+"""
+
 import json
 import random
 
