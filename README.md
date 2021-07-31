@@ -1,4 +1,4 @@
-# NLP Team Lab SS20
+# NLP Team Lab SS21
 This is the project of Vaibhav Srivastav and Emīls Kadiķis for the **Computational Linguistics Team Lab** course at the University of Stuttgart.
 
 # Running experiments
@@ -8,7 +8,7 @@ Experiments can be run by passing in an experiment definition json file to main.
 
 If the file is executed without parameters, the human baseline will be run (wherein you'll be asked to classify the hypotheses yourself)
 
-The JSON files have information about what all parameters are expected by the classifier/ similarity routine.
+The JSON files have information about what all parameters are expected by the classifier/ similarity routine and the name of the JSON file dictates what codebase it runs.
 
 # Baselines
 Currently there are 2 main baselines - a decision tree classifier and cosine similarity using TF-IDF as the features. Check the json files in the root of this project for the experiment definitions.
