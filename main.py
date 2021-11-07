@@ -94,7 +94,7 @@ def expand_experiments(experiments):
 
 
 if __name__ == "__main__":
-    args.infile = [open('transformers_classification.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
+    #args.infile = [open('transformers_classification.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
     if args.infile is not None and args.infile[0] is not None:
         # load the passed json file that contains details about the experiment to run
         all_experiments = json.load(args.infile[0])['experiments']
