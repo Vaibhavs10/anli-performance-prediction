@@ -2,7 +2,7 @@ from feature_engineering import vectorizer
 from data import data_loader
 from models import evaluation
 
-import msvcrt
+#import msvcrt
 import random
 import os
 

@@ -52,7 +52,7 @@ def parse_dataloader(dataloader):
         processed_dataloader.append(data_dict)
     return processed_dataloader
 
-def preprocess_function(examples):
+def preprocess_function(examples, tokenizer):
     # Repeat each first sentence four times to go with the four possibilities of second sentences.
     ending_names = ["hypothesis0", "hypothesis1"]
     first_sentences = [[context] * 2 for context in examples["observation"]]
@@ -122,7 +122,7 @@ def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, w
     datasets = load_dataset('csv', data_files={'train': 'train_processed.csv',
                                                'validation': 'val_processed.csv'})    
 
-    encoded_datasets = datasets.map(preprocess_function, load_from_cache_file=False, batched=True)
+    encoded_datasets = datasets.map(preprocess_function, fn_kwargs={"tokenizer": tokenizer},load_from_cache_file=False, batched=True)
 
     args = TrainingArguments(
         folder_name,
