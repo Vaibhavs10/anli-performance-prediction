@@ -94,19 +94,14 @@ def expand_experiments(experiments):
 
 
 if __name__ == "__main__":
-    #args.infile = [open('wmd_similarity.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
+    args.infile = [open('transformers_classification.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
     if args.infile is not None and args.infile[0] is not None:
         # load the passed json file that contains details about the experiment to run
         all_experiments = json.load(args.infile[0])['experiments']
         all_experiments = expand_experiments(all_experiments)
         for experiment_definition in all_experiments:
             id = experiment_definition['experiment_id']
-            try:
-                # load the appropriate .py file from the experiments folder
-                experiment = importlib.import_module("experiments." + id)
-            except ModuleNotFoundError:
-                print("Experiment at experiments.%s not found" % id)
-                continue
+            experiment = importlib.import_module("experiments." + id)
             labels, accuracy, logs = experiment.run(experiment_definition)
 
             # some experiments take care of saving their results themselves. For example, decision trees calculate accuracy at ALL depths, so the result saving is different

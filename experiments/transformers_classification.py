@@ -112,7 +112,7 @@ def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, w
     model = AutoModelForMultipleChoice.from_pretrained(model_checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, use_fast=True)
     train_list_of_rows = parse_and_return_rows(train_file_path)
-    dev_list_of_rows = parse_and_return_rows(train_file_path)
+    dev_list_of_rows = parse_and_return_rows(val_file_path)
     train = parse_dataloader(train_list_of_rows)
     val = parse_dataloader(dev_list_of_rows)
 
