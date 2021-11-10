@@ -27,6 +27,9 @@ def save_results(experiment_definition, labels, accuracy, logs):
 
     # create folder for results
     id = experiment_definition['experiment_id']
+    hp = experiment_definition['hyperparameters']
+    model_checkpoint = hp['model_checkpoint'] if 'model_checkpoint' in hp else ""
+    id = model_checkpoint + "_" + id if model_checkpoint else id
     timestamp = time.strftime("%m_%d__%H_%M_%S", time.gmtime())
     base_path = os.path.join('experiment_results', str(accuracy) + "_" + id + '_' + timestamp)
     os.mkdir(base_path)
