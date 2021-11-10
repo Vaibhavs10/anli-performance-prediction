@@ -33,6 +33,7 @@ def save_results(experiment_definition, labels, accuracy, logs):
     id = model_checkpoint + "_" + id if model_checkpoint else id
     timestamp = time.strftime("%m_%d__%H_%M_%S", time.gmtime())
     base_path = os.path.join('experiment_results', str(accuracy) + "_" + id + '_' + timestamp)
+    base_path = base_path.replace('/', '_')
     os.mkdir(base_path)
 
     # save hyperparameters
