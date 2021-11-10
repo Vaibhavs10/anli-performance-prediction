@@ -1,4 +1,5 @@
 import json
+import traceback
 import importlib
 import argparse
 import time
@@ -105,7 +106,16 @@ if __name__ == "__main__":
         for experiment_definition in all_experiments:
             id = experiment_definition['experiment_id']
             experiment = importlib.import_module("experiments." + id)
-            labels, accuracy, logs = experiment.run(experiment_definition)
+
+            labels = None
+            accuracy = None
+            logs = None
+
+            try:
+                labels, accuracy, logs = experiment.run(experiment_definition)
+            except Exception as e:
+                print("Error running experiment: " + id)
+                print(traceback.format_exc())
 
             # some experiments take care of saving their results themselves. For example, decision trees calculate accuracy at ALL depths, so the result saving is different
             if labels is not None:
