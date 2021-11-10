@@ -42,7 +42,7 @@ def save_results(experiment_definition, labels, accuracy, logs):
         file_name = "labels.lst"
         file = open(os.path.join(base_path, file_name), "w")
         for l in labels:
-            file.write(l + '\n')
+            file.write(str(l) + '\n')
         file.close()
 
     # save logs, if any were returned

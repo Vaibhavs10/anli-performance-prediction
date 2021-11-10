@@ -6,7 +6,7 @@
 
             "hyperparameters" : {
                 "batch_size": 4, 
-                "folder_name": "transformer_test_model", 
+                "folder_name": "checkpoints", 
                 "lr":5e-5, 
                 "train_epochs":3, 
                 "wgt_decay":0.01, 
