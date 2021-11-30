@@ -7,6 +7,9 @@ The script automatically saves all the checkpoint sand tokenizer files
 """
 
 import csv
+import os
+import shutil
+import time
 from csv import reader
 import pandas as pd
 import numpy as np
@@ -107,7 +110,7 @@ def compute_metrics(eval_predictions):
     preds = np.argmax(predictions, axis=1)
     return {"accuracy": (preds == label_ids).astype(np.float32).mean().item()}
 
-def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, wgt_decay, model_checkpoint, train_file_path, val_file_path):
+def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, wgt_decay, model_checkpoint, train_file_path, val_file_path, delete_checkpoints):
 
     model = AutoModelForMultipleChoice.from_pretrained(model_checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, use_fast=True)
@@ -123,9 +126,12 @@ def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, w
                                                'validation': 'val_processed.csv'})    
 
     encoded_datasets = datasets.map(preprocess_function, fn_kwargs={"tokenizer": tokenizer},load_from_cache_file=False, batched=True)
+    
+    timestamp = time.strftime("%m_%d__%H_%M_%S", time.gmtime())
+    checkpoint_folder = os.path.join(folder_name, model_checkpoint + "_" + timestamp)
 
     args = TrainingArguments(
-        folder_name,
+        checkpoint_folder,
         evaluation_strategy = "epoch",
         learning_rate=lr,
         per_device_train_batch_size=batch_size,
@@ -146,7 +152,16 @@ def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, w
     )
     trainer.train()
 
-    return None, None, None
+    if delete_checkpoints:
+        shutil.rmtree(checkpoint_folder)
+    os.remove("train_processed.csv")
+    os.remove("val_processed.csv")
+
+    predictions = trainer.predict(encoded_datasets["validation"])
+    labels = predictions[1].tolist()
+    acc = predictions[2]["test_accuracy"]
+    logs = str(trainer.state.log_history)
+    return labels, acc, logs
 
 def run(ex):
     hp = ex["hyperparameters"]
@@ -159,4 +174,5 @@ def run(ex):
         wgt_decay=get_param(hp, "wgt_decay", None), 
         model_checkpoint=get_param(hp, "model_checkpoint", None), 
         train_file_path=get_param(hp, "train_file_path", None), 
-        val_file_path=get_param(hp, "val_file_path", None))
+        val_file_path=get_param(hp, "val_file_path", None),
+        delete_checkpoints=get_param(hp, "delete_checkpoints", True))

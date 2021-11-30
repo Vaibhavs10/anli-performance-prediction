@@ -1,4 +1,5 @@
 import json
+import traceback
 import importlib
 import argparse
 import time
@@ -27,6 +28,10 @@ def save_results(experiment_definition, labels, accuracy, logs):
 
     # create folder for results
     id = experiment_definition['experiment_id']
+    hp = experiment_definition['hyperparameters']
+    model_checkpoint = hp['model_checkpoint'] if 'model_checkpoint' in hp else ""
+    id = model_checkpoint + "_" + id if model_checkpoint else id
+    id = id.replace('/', '_')
     timestamp = time.strftime("%m_%d__%H_%M_%S", time.gmtime())
     base_path = os.path.join('experiment_results', str(accuracy) + "_" + id + '_' + timestamp)
     os.mkdir(base_path)
@@ -42,7 +47,7 @@ def save_results(experiment_definition, labels, accuracy, logs):
         file_name = "labels.lst"
         file = open(os.path.join(base_path, file_name), "w")
         for l in labels:
-            file.write(l + '\n')
+            file.write(str(l) + '\n')
         file.close()
 
     # save logs, if any were returned
@@ -102,7 +107,16 @@ if __name__ == "__main__":
         for experiment_definition in all_experiments:
             id = experiment_definition['experiment_id']
             experiment = importlib.import_module("experiments." + id)
-            labels, accuracy, logs = experiment.run(experiment_definition)
+
+            labels = None
+            accuracy = None
+            logs = None
+
+            try:
+                labels, accuracy, logs = experiment.run(experiment_definition)
+            except Exception as e:
+                print("Error running experiment: " + id)
+                print(traceback.format_exc())
 
             # some experiments take care of saving their results themselves. For example, decision trees calculate accuracy at ALL depths, so the result saving is different
             if labels is not None:
