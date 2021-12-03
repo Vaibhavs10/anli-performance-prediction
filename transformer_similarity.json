@@ -2,11 +2,11 @@
     "experiments": [
         {
             "experiment_id":"transformer_similarity",   
-            "try_combinations":["embedding_type"],
+            "try_combinations":["model_checkpoint"],
             "trace": true,     
 
             "hyperparameters" : {
-                "embedding_type":["albert-base-v2", "albert-large-v2", "bert-base-uncased", "bert-large-uncased", "google/bigbird-roberta-base", "camembert-base", "google/canine-s", "YituTech/conv-bert-base", "distilbert-base-uncased", "distilgpt2", "google/electra-base-discriminator", "google/electra-small-discriminator", "google/electra-large-discriminator", "flaubert/flaubert_base_uncased", "google/fnet-base", "funnel-transformer/medium-base", "kssteven/ibert-roberta-base", "kssteven/ibert-roberta-large", "allenai/longformer-base-4096", "nvidia/megatron-bert-cased-345m", "google/mobilebert-uncased", "microsoft/mpnet-base", "google/rembert", "roberta-base", "roberta-large", "distilroberta-base", "junnyu/roformer_chinese_base", "squeezebert/squeezebert-uncased", "xlm-mlm-en-2048", "xlm-roberta-base", "xlnet-base-cased"],
+                "model_checkpoint":["albert-base-v2", "albert-large-v2", "bert-base-uncased", "bert-large-uncased", "google/bigbird-roberta-base", "camembert-base", "google/canine-s", "YituTech/conv-bert-base", "distilbert-base-uncased", "distilgpt2", "google/electra-base-discriminator", "google/electra-small-discriminator", "google/electra-large-discriminator", "flaubert/flaubert_base_uncased", "google/fnet-base", "funnel-transformer/medium-base", "kssteven/ibert-roberta-base", "kssteven/ibert-roberta-large", "allenai/longformer-base-4096", "nvidia/megatron-bert-cased-345m", "google/mobilebert-uncased", "microsoft/mpnet-base", "google/rembert", "roberta-base", "roberta-large", "distilroberta-base", "junnyu/roformer_chinese_base", "squeezebert/squeezebert-uncased", "xlm-mlm-en-2048", "xlm-roberta-base", "xlnet-base-cased"],
                 "dev_data_loader_name": "data_loaders.dev_data_loader"
             }
         }

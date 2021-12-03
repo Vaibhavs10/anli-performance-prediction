@@ -1,3 +1,4 @@
+import time
 import importlib
 import models.evaluation as evaluation
 import scipy.spatial as spatial
@@ -42,19 +43,23 @@ def _run_transformer_similarity_experiment(
     dev_data_loader_name):
 
     logs=[]
-
+    printt("Starting similarity experiment for ", embedding_type, "...")
     printt("Loading data...")
     dev_documents = _load_data(dev_data_loader_name)
 
     transformer_model = document_embeddings.get_pretrained_embeddings(embedding_type)
 
     printt("Predicting labels on devset...")
+    start = time.time()
     predicted_labels = _predict_labels_cosine(transformer_model, dev_documents)
     real_labels = [x[3] for x in dev_documents]
     acc = evaluation.calculate_accuracy(predicted_labels, real_labels)
-
+    end = time.time()
+    time_taken = end - start
     printt("Accuracy: " + str(acc))
+    printt("Time taken: " + str(time_taken))
     logs.append("Accuracy: " + str(acc))
+    logs.append("Time taken: " + str(time_taken))
 
     return predicted_labels, acc, logs
 
@@ -67,7 +72,7 @@ def run(ex):
             "trace": true,     
 
             "hyperparameters" : {
-                "embedding_type":"bert-base-uncased",
+                "model_checkpoint":"bert-base-uncased",
                 "dev_data_loader_name": "data_loaders.dev_data_loader"
             }
         }
@@ -78,6 +83,6 @@ def run(ex):
     
     hp = ex["hyperparameters"]
     return _run_transformer_similarity_experiment(
-        embedding_type=get_param(hp, "embedding_type", "word2vec"),
+        embedding_type=get_param(hp, "model_checkpoint", "word2vec"),
         dev_data_loader_name=get_param(hp, "dev_data_loader_name", None)
     )
