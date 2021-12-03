@@ -43,7 +43,7 @@ def _run_transformer_similarity_experiment(
     dev_data_loader_name):
 
     logs=[]
-    printt("Starting similarity experiment for ", embedding_type, "...")
+    printt("Starting similarity experiment for " + embedding_type + "...")
     printt("Loading data...")
     dev_documents = _load_data(dev_data_loader_name)
 
