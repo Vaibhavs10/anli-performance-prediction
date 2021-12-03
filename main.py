@@ -125,6 +125,7 @@ if __name__ == "__main__":
                 labels, accuracy, logs = experiment.run(experiment_definition)
 
                 if 'use_first_value_that_works' in experiment_definition:
+                    print('Found value for ', parameter_name, ' that worked: ', parameter_value)
                     known_parameter_values_that_work[parameter_name] = parameter_value
             except Exception as e:
                 print("Error running experiment: " + id)
