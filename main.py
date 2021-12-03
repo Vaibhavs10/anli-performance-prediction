@@ -79,6 +79,8 @@ def expand_experiments(experiments):
     for experiment_definition in experiments:
         if 'try_combinations' in experiment_definition:
             column_names = experiment_definition['try_combinations']
+            if 'use_first_value_that_works' in experiment_definition:
+                column_names.append(experiment_definition['use_first_value_that_works'])
             all_possible_values = {column_name: experiment_definition['hyperparameters'][column_name] for column_name in column_names}
             all_possible_value_combinations = product_dict(**all_possible_values)
 
@@ -99,13 +101,20 @@ def expand_experiments(experiments):
 
 
 if __name__ == "__main__":
-    #args.infile = [open('transformers_classification.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
+    args.infile = [open('transformers_classification.json', 'r')] # uncomment this to run an experiment without having to pass it in the command line
     if args.infile is not None and args.infile[0] is not None:
         # load the passed json file that contains details about the experiment to run
         all_experiments = json.load(args.infile[0])['experiments']
         all_experiments = expand_experiments(all_experiments)
+        known_parameter_values_that_work = {}
         for experiment_definition in all_experiments:
             id = experiment_definition['experiment_id']
+
+            if 'use_first_value_that_works' in experiment_definition:
+                parameter_name = experiment_definition['use_first_value_that_works']
+                parameter_value = experiment_definition['hyperparameters'][parameter_name]
+                if parameter_name in known_parameter_values_that_work and known_parameter_values_that_work[parameter_name] != parameter_value:
+                    continue # skip experiment because it uses a different value than the one that worked previously
             experiment = importlib.import_module("experiments." + id)
 
             labels = None
@@ -114,9 +123,13 @@ if __name__ == "__main__":
 
             try:
                 labels, accuracy, logs = experiment.run(experiment_definition)
+
+                if 'use_first_value_that_works' in experiment_definition:
+                    known_parameter_values_that_work[parameter_name] = parameter_value
             except Exception as e:
                 print("Error running experiment: " + id)
                 print(traceback.format_exc())
+
 
             # some experiments take care of saving their results themselves. For example, decision trees calculate accuracy at ALL depths, so the result saving is different
             if labels is not None:
