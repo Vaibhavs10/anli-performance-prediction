@@ -154,9 +154,7 @@ def _run_transformer_classification(batch_size, folder_name, lr, train_epochs, w
 
     if delete_checkpoints:
         shutil.rmtree(checkpoint_folder)
-    os.remove("train_processed.csv")
-    os.remove("val_processed.csv")
-
+    
     predictions = trainer.predict(encoded_datasets["validation"])
     labels = predictions[1].tolist()
     acc = predictions[2]["test_accuracy"]
