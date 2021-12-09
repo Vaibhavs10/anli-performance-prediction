@@ -1,4 +1,4 @@
-# NLP Team Lab SS21
+# Embarrassingly Simple Performance Prediction for Abductive Natural Language Inference
 
 # Running experiments
 Experiments can be run by passing in an experiment definition json file to main.py
