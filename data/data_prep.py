@@ -1,6 +1,3 @@
-# Author: Vaibhav Srivastav
-# No rights reserved
-
 import csv
 import json
 

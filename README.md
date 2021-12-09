@@ -1,5 +1,4 @@
 # NLP Team Lab SS21
-This is the project of Vaibhav Srivastav and Emīls Kadiķis for the **Computational Linguistics Team Lab** course at the University of Stuttgart.
 
 # Running experiments
 Experiments can be run by passing in an experiment definition json file to main.py

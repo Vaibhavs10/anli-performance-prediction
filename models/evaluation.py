@@ -1,6 +1,3 @@
-# Author: Vaibhav Srivastav
-# No rights reserved
-
 def calculate_accuracy(pred_values, actual_values):
     total_count = 0.0
     correct_values = 0.0
