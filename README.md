@@ -9,9 +9,6 @@ If the file is executed without parameters, the human baseline will be run (wher
 
 The JSON files have information about what all parameters are expected by the classifier/ similarity routine and the name of the JSON file dictates what codebase it runs.
 
-# Baselines
-Currently there are 2 main baselines - a decision tree classifier and cosine similarity using TF-IDF as the features. Check the json files in the root of this project for the experiment definitions.
-
 # Project structure
 Everything is broadly structured into 4 folders
 
