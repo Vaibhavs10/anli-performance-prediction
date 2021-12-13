@@ -8,7 +8,7 @@
 
             "hyperparameters" : {
                 "lr":[9e-5, 7e-5, 5e-5, 3e-5, 1e-5], 
-                "batch_size": [40, 32, 24, 20, 16, 12, 8, 4, 3, 2, 1], 
+                "batch_size": [128, 100, 80, 64, 60, 50, 40, 32, 24, 20, 16, 12, 8, 4, 3, 2, 1], 
                 "folder_name": "checkpoints", 
                 "train_epochs":3, 
                 "wgt_decay":0.01, 
